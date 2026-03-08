@@ -1,4 +1,4 @@
-package com.example.quest_log;
+package com.vinay.questlog;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -396,3 +396,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 }
+
+
+

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <com.example.quest_log.views.CosmicBackgroundView
+    <com.vinay.questlog.views.CosmicBackgroundView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -269,3 +269,4 @@
     </LinearLayout>
 </ScrollView>
 </FrameLayout>
+

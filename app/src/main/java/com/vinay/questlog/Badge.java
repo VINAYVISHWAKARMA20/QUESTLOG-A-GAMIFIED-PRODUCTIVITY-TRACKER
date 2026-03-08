@@ -1,4 +1,4 @@
-package com.example.quest_log;
+package com.vinay.questlog;
 
 public class Badge {
     private String name;
@@ -22,3 +22,6 @@ public class Badge {
     public boolean isUnlocked() { return isUnlocked; }
     public void setUnlocked(boolean unlocked) { isUnlocked = unlocked; }
 }
+
+
+

@@ -1,4 +1,4 @@
-package com.example.quest_log;
+package com.vinay.questlog;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -96,3 +96,6 @@ public class UserProgressManager {
         return "Eldritch Legend";
     }
 }
+
+
+

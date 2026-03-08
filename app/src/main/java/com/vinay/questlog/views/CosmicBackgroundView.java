@@ -1,4 +1,4 @@
-package com.example.quest_log.views;
+package com.vinay.questlog.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -113,3 +113,6 @@ public class CosmicBackgroundView extends View {
         }
     }
 }
+
+
+

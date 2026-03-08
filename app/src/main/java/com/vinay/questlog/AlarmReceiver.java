@@ -1,4 +1,4 @@
-package com.example.quest_log;
+package com.vinay.questlog;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -89,3 +89,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 }
+
+
+

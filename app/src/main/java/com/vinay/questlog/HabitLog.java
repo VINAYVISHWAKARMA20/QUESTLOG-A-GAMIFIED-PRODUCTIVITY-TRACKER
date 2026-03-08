@@ -1,4 +1,4 @@
-package com.example.quest_log;
+package com.vinay.questlog;
 
 public class HabitLog {
     private int habitId;
@@ -18,3 +18,6 @@ public class HabitLog {
     public String getStatus() { return status; }
     public String getDate() { return date; }
 }
+
+
+

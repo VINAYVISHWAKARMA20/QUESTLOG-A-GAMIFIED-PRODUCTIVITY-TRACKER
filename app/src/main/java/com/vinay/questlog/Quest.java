@@ -1,4 +1,4 @@
-package com.example.quest_log;
+package com.vinay.questlog;
 
 public class Quest {
     private int id;
@@ -31,3 +31,6 @@ public class Quest {
     public int getDifficulty() { return difficulty; }
     public String getStatus() { return status; }
 }
+
+
+

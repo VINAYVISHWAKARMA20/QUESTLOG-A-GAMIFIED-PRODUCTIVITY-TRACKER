@@ -1,4 +1,4 @@
-package com.example.quest_log.adapters;
+package com.vinay.questlog.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.quest_log.Habit;
-import com.example.quest_log.HabitLog;
-import com.example.quest_log.R;
+import com.vinay.questlog.Habit;
+import com.vinay.questlog.HabitLog;
+import com.vinay.questlog.R;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -269,3 +269,6 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
         }
     }
 }
+
+
+

@@ -1,4 +1,4 @@
-package com.example.quest_log;
+package com.vinay.questlog;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -32,7 +32,10 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         manager.cancel(questId);
         
         // Refresh UI if app is open
-        Intent refreshIntent = new Intent("com.example.quest_log.ACTION_QUEST_UPDATED");
+        Intent refreshIntent = new Intent("com.vinay.questlog.ACTION_QUEST_UPDATED");
         context.sendBroadcast(refreshIntent);
     }
 }
+
+
+

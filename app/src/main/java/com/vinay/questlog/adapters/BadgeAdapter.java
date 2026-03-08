@@ -1,4 +1,4 @@
-package com.example.quest_log.adapters;
+package com.vinay.questlog.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.quest_log.Badge;
-import com.example.quest_log.R;
+import com.vinay.questlog.Badge;
+import com.vinay.questlog.R;
 import java.util.List;
 
 public class BadgeAdapter extends RecyclerView.Adapter<BadgeAdapter.BadgeViewHolder> {
@@ -78,3 +78,6 @@ public class BadgeAdapter extends RecyclerView.Adapter<BadgeAdapter.BadgeViewHol
         }
     }
 }
+
+
+

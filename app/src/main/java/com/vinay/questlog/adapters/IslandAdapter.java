@@ -1,4 +1,4 @@
-package com.example.quest_log.adapters;
+package com.vinay.questlog.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.quest_log.R;
+import com.vinay.questlog.R;
 import java.util.List;
 
 public class IslandAdapter extends RecyclerView.Adapter<IslandAdapter.IslandViewHolder> {
@@ -107,3 +107,6 @@ public class IslandAdapter extends RecyclerView.Adapter<IslandAdapter.IslandView
         }
     }
 }
+
+
+

@@ -35,3 +35,4 @@
             app:tint="#44FFFFFF" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+

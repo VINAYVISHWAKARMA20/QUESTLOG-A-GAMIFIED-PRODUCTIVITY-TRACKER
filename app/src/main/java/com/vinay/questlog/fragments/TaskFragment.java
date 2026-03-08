@@ -1,4 +1,4 @@
-package com.example.quest_log.fragments;
+package com.vinay.questlog.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -17,12 +17,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.quest_log.DatabaseHelper;
-import com.example.quest_log.Quest;
-import com.example.quest_log.R;
-import com.example.quest_log.adapters.QuestAdapter;
-import com.example.quest_log.UserProgressManager;
-import com.example.quest_log.MainActivity;
+import com.vinay.questlog.DatabaseHelper;
+import com.vinay.questlog.Quest;
+import com.vinay.questlog.R;
+import com.vinay.questlog.adapters.QuestAdapter;
+import com.vinay.questlog.UserProgressManager;
+import com.vinay.questlog.MainActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -76,7 +76,11 @@ public class TaskFragment extends Fragment {
         super.onResume();
         loadData(); // Fresh load every time page is visible
         if (getContext() != null) {
-            getContext().registerReceiver(refreshReceiver, new IntentFilter("com.example.quest_log.ACTION_QUEST_UPDATED"), Context.RECEIVER_NOT_EXPORTED);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                getContext().registerReceiver(refreshReceiver, new IntentFilter("com.vinay.questlog.ACTION_QUEST_UPDATED"), Context.RECEIVER_NOT_EXPORTED);
+            } else {
+                getContext().registerReceiver(refreshReceiver, new IntentFilter("com.vinay.questlog.ACTION_QUEST_UPDATED"));
+            }
         }
     }
 
@@ -306,7 +310,7 @@ public class TaskFragment extends Fragment {
             }
 
             android.content.Context ctx = getContext();
-            android.content.Intent intent = new android.content.Intent(ctx, com.example.quest_log.AlarmReceiver.class);
+            android.content.Intent intent = new android.content.Intent(ctx, com.vinay.questlog.AlarmReceiver.class);
             intent.putExtra("title", title);
             intent.putExtra("questId", questId);
             intent.putExtra("xp", 100);
@@ -317,7 +321,7 @@ public class TaskFragment extends Fragment {
             android.app.AlarmManager alarmManager = (android.app.AlarmManager) ctx.getSystemService(android.content.Context.ALARM_SERVICE);
             if (alarmManager != null) {
                 // Use AlarmClock for maximum reliability (it bypasses most battery optimizations)
-                android.content.Intent showIntent = new android.content.Intent(ctx, com.example.quest_log.MainActivity.class);
+                android.content.Intent showIntent = new android.content.Intent(ctx, com.vinay.questlog.MainActivity.class);
                 android.app.PendingIntent showPendingIntent = android.app.PendingIntent.getActivity(
                     ctx, questId + 1000, showIntent, android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
                 
@@ -333,3 +337,6 @@ public class TaskFragment extends Fragment {
         }
     }
 }
+
+
+

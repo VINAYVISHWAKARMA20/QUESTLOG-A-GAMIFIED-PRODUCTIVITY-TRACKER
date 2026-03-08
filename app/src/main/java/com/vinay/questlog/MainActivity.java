@@ -1,4 +1,4 @@
-package com.example.quest_log;
+package com.vinay.questlog;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,11 +6,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import com.example.quest_log.fragments.HabitFragment;
-import com.example.quest_log.fragments.StatsFragment;
-import com.example.quest_log.fragments.TaskFragment;
-import com.example.quest_log.fragments.WorldFragment;
-import com.example.quest_log.utils.OnBackPressedListener;
+import com.vinay.questlog.fragments.HabitFragment;
+import com.vinay.questlog.fragments.StatsFragment;
+import com.vinay.questlog.fragments.TaskFragment;
+import com.vinay.questlog.fragments.WorldFragment;
+import com.vinay.questlog.utils.OnBackPressedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -184,3 +184,5 @@ public class MainActivity extends AppCompatActivity {
         feedbackHandler.postDelayed(hideFeedbackRunnable, 3000);
     }
 }
+
+

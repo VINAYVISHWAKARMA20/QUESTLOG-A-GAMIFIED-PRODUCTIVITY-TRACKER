@@ -1,4 +1,4 @@
-package com.example.quest_log.fragments;
+package com.vinay.questlog.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,12 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.quest_log.Badge;
-import com.example.quest_log.DatabaseHelper;
-import com.example.quest_log.HabitLog;
-import com.example.quest_log.R;
-import com.example.quest_log.UserProgressManager;
-import com.example.quest_log.adapters.BadgeAdapter;
+import com.vinay.questlog.Badge;
+import com.vinay.questlog.DatabaseHelper;
+import com.vinay.questlog.HabitLog;
+import com.vinay.questlog.R;
+import com.vinay.questlog.UserProgressManager;
+import com.vinay.questlog.adapters.BadgeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,3 +160,6 @@ public class StatsFragment extends Fragment {
         return dbHelper.getCompletedQuestsTodayCount() >= 10;
     }
 }
+
+
+

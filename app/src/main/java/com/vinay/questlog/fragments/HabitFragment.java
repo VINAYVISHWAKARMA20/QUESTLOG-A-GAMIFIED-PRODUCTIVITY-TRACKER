@@ -1,4 +1,4 @@
-package com.example.quest_log.fragments;
+package com.vinay.questlog.fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -15,14 +15,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.quest_log.DatabaseHelper;
-import com.example.quest_log.Habit;
-import com.example.quest_log.HabitLog;
-import com.example.quest_log.MainActivity;
-import com.example.quest_log.R;
-import com.example.quest_log.UserProgressManager;
-import com.example.quest_log.adapters.HabitAdapter;
-import com.example.quest_log.utils.OnBackPressedListener;
+import com.vinay.questlog.DatabaseHelper;
+import com.vinay.questlog.Habit;
+import com.vinay.questlog.HabitLog;
+import com.vinay.questlog.MainActivity;
+import com.vinay.questlog.R;
+import com.vinay.questlog.UserProgressManager;
+import com.vinay.questlog.adapters.HabitAdapter;
+import com.vinay.questlog.utils.OnBackPressedListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -203,3 +203,6 @@ public class HabitFragment extends Fragment implements HabitAdapter.OnHabitActio
             .show();
     }
 }
+
+
+
