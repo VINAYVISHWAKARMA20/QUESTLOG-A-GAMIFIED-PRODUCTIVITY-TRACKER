@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/dark_grey"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp">
+
+    <RelativeLayout
+        android:id="@+id/island_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="#1AFFFFFF">
+
+        <!-- Circular Icon Container -->
+        <FrameLayout
+            android:id="@+id/fl_icon_container"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/island_bg_shore" 
+            android:layout_centerVertical="true">
+            
+            <ImageView
+                android:id="@+id/iv_island_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_world"
+                app:tint="@color/white" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toEndOf="@id/fl_icon_container"
+            android:layout_toStartOf="@id/iv_island_lock"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="14dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_island_lvl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LVL 1-5"
+                android:textColor="@color/gold"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1" />
+
+            <TextView
+                android:id="@+id/tv_island_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shore of Beginnings"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_island_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Where all new heroes begin their journey to mastery."
+                android:textColor="#AAFFFFFF"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_island_lock"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_lock"
+            app:tint="@color/gold"
+            android:alpha="0.6" />
+
+        <!-- Thin Mastery Bar at the Absolute Bottom -->
+        <ProgressBar
+            android:id="@+id/pb_island_mastery"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_alignParentBottom="true"
+            android:progressDrawable="@drawable/success_progress_bar"
+            android:progress="40" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
