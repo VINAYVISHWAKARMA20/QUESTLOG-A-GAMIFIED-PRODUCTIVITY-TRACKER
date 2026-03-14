@@ -1,4 +1,5 @@
 <div align="center">
+  *(Drop your 1st image (Logo) here!)*
   <h1>🚀 QuestLog</h1>
   <p><strong>A Gamified Productivity Tracker & Cosmic RPG Adventure</strong></p>
 </div>
@@ -17,6 +18,8 @@ Instead of just checking off boxes, you earn EXP, level up your spaceship, and p
 ### 🛠️ Daily & Recurring Quests
 - Create **Habits** and **One-off Tasks** easily.
 - Support for **Recurring Tasks** (Daily, Weekly, Monthly) that automatically duplicate upon completion.
+- **Task Sorting & Management:** Keep your daily objectives organized with smart sorting categories.
+- **Ringing & Notifications:** Set active alarms and reminders so you never forget to complete a quest.
 - Satisfying complete animations with haptic feedback and custom sound alerts.
 
 ### 🎮 The RPG System
@@ -47,7 +50,11 @@ Spend your gathered **Cosmic Dust** in the Shop:
 
 ## 📸 Screenshots
 
+*(Drag and drop your remaining screenshots here!)*
 
+| Cosmic Journey Map | Quest Board & HUD | Intergalactic Shop | Dashboard & Stats |
+|:---:|:---:|:---:|:---:|
+| *(Drop Image 2 Here)* | *(Drop Image 3 Here)* | *(Drop Image 4 Here)* | *(Drop Image 5 Here)* |
 
 ---
 
@@ -58,6 +65,3 @@ Spend your gathered **Cosmic Dust** in the Shop:
 - **Local Database:** SQLite via `DatabaseHelper`
 
 ---
-
-## ⚙️ Installation
-
