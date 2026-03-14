@@ -1,5 +1,4 @@
 <div align="center">
-  *(Drop your 1st image (Logo) here!)*
   <h1>🚀 QuestLog</h1>
   <p><strong>A Gamified Productivity Tracker & Cosmic RPG Adventure</strong></p>
 </div>
