@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="app/src/main/res/drawable/app_logo.png" width="150" alt="QuestLog Logo">
   <h1>🚀 QuestLog</h1>
   <p><strong>A Gamified Productivity Tracker & Cosmic RPG Adventure</strong></p>
 </div>
@@ -48,11 +47,7 @@ Spend your gathered **Cosmic Dust** in the Shop:
 
 ## 📸 Screenshots
 
-*(Add screenshots of your app running here!)*
 
-| Dashboard | Intergalactic Shop | Cosmic Journey Map | Mastery Prime |
-|:---:|:---:|:---:|:---:|
-| `<Image Here>` | `<Image Here>` | `<Image Here>` | `<Image Here>` |
 
 ---
 
@@ -66,6 +61,3 @@ Spend your gathered **Cosmic Dust** in the Shop:
 
 ## ⚙️ Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/VINAYVISHWAKARMA20/QUESTLOG-A-GAMIFIED-PRODUCTIVITY-TRACKER.git
