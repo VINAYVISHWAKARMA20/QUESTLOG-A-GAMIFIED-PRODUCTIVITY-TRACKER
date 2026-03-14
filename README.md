@@ -45,17 +45,6 @@ Spend your gathered **Cosmic Dust** in the Shop:
 - **Utility Items:** Buy Deflector Shields to block incoming HP damage, or Station Docking Passes to pause your streak during vacations!
 - **Cosmic Pets & Ship Colors:** Adopt pets (like the highly coveted animated Cosmic Dragon!) that physically fly alongside your spaceship on the map!
 - **Titles:** Buy bragging-rights Titles that show below your level.
-
----
-
-## 📸 Screenshots
-
-*(Drag and drop your remaining screenshots here!)*
-
-| Cosmic Journey Map | Quest Board & HUD | Intergalactic Shop | Dashboard & Stats |
-|:---:|:---:|:---:|:---:|
-| *(Drop Image 2 Here)* | *(Drop Image 3 Here)* | *(Drop Image 4 Here)* | *(Drop Image 5 Here)* |
-
 ---
 
 ## 💻 Tech Stack
