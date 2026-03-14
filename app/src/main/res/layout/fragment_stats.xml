@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
-
-    <com.vinay.questlog.views.CosmicBackgroundView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:background="@android:color/transparent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -145,7 +142,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="24dp">
             <include layout="@layout/item_summary_card" android:id="@+id/card_completed" android:layout_weight="1" android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginEnd="6dp" />

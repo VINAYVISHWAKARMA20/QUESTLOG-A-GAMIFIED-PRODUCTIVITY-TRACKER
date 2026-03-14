@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "QuestLog.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // Table: habits
     public static final String TABLE_HABITS = "habits";
@@ -34,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_QUEST_DIFFICULTY = "difficulty";
     public static final String COLUMN_QUEST_STATUS = "status"; // PENDING, COMPLETED, MISSED
     public static final String COLUMN_COMPLETED_AT = "completed_at"; // Timestamp for achievements
+    public static final String COLUMN_QUEST_RECURRENCE = "recurrence"; // None, Daily, Weekly, Monthly
 
     private static final String CREATE_TABLE_HABITS = "CREATE TABLE " + TABLE_HABITS + "("
             + COLUMN_HABIT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -57,7 +58,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_QUEST_TIME + " TEXT,"
             + COLUMN_QUEST_DIFFICULTY + " INTEGER,"
             + COLUMN_QUEST_STATUS + " TEXT,"
-            + COLUMN_COMPLETED_AT + " TEXT"
+            + COLUMN_COMPLETED_AT + " TEXT,"
+            + COLUMN_QUEST_RECURRENCE + " TEXT"
             + ")";
 
     public DatabaseHelper(Context context) {
@@ -101,6 +103,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // Optionally backfill existing logs with current month date
             String currentMonth = new java.text.SimpleDateFormat("yyyy-MM", java.util.Locale.getDefault()).format(new java.util.Date());
             db.execSQL("UPDATE " + TABLE_HABIT_LOGS + " SET " + COLUMN_LOG_DATE + " = ? || '-' || printf('%02d', " + COLUMN_LOG_DAY + ")", new String[]{currentMonth});
+        }
+        if (oldVersion < 4) {
+            db.execSQL("ALTER TABLE " + TABLE_QUESTS + " ADD COLUMN " + COLUMN_QUEST_RECURRENCE + " TEXT DEFAULT 'None'");
         }
 
         // The original onUpgrade logic (drop and recreate) follows.
@@ -183,7 +188,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Quest Methods
-    public long addQuest(String title, String details, String category, String date, String time, int difficulty) {
+    public long addQuest(String title, String details, String category, String date, String time, int difficulty, String recurrence) {
         SQLiteDatabase db = this.getWritableDatabase();
         android.content.ContentValues values = new android.content.ContentValues();
         values.put(COLUMN_QUEST_TITLE, title);
@@ -193,6 +198,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_QUEST_TIME, time);
         values.put(COLUMN_QUEST_DIFFICULTY, difficulty);
         values.put(COLUMN_QUEST_STATUS, "PENDING");
+        values.put(COLUMN_QUEST_RECURRENCE, recurrence == null ? "None" : recurrence);
         return db.insert(TABLE_QUESTS, null, values);
     }
 
@@ -202,9 +208,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         android.database.Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_QUESTS + " ORDER BY " + COLUMN_QUEST_STATUS + " DESC", null);
         if (cursor.moveToFirst()) {
             do {
+                String recurrence = "None";
+                int recurrenceIndex = cursor.getColumnIndex(COLUMN_QUEST_RECURRENCE);
+                if (recurrenceIndex != -1) {
+                    recurrence = cursor.getString(recurrenceIndex);
+                }
+                
                 quests.add(new Quest(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
                         cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                        cursor.getInt(6), cursor.getString(7)));
+                        cursor.getInt(6), cursor.getString(7), recurrence));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -394,6 +406,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int count = cursor.moveToFirst() ? cursor.getInt(0) : 0;
         cursor.close();
         return count;
+    }
+
+    public int scanAndPenalizeMissedItems(UserProgressManager progressManager) {
+        int penaltyCount = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(new java.util.Date());
+        String timeNow = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).format(new java.util.Date());
+
+        // 1. Quests that are PENDING and Date is strictly passed (To be safe, we only penalize past Days, not hours)
+        String questQuery = "SELECT " + COLUMN_QUEST_ID + " FROM " + TABLE_QUESTS + 
+                            " WHERE " + COLUMN_QUEST_STATUS + "='PENDING'" +
+                            " AND " + COLUMN_QUEST_DATE + " < ?";
+        
+        android.database.Cursor cursor = db.rawQuery(questQuery, new String[]{today});
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                updateQuestStatus(id, "MISSED");
+                penaltyCount++;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // 2. Habits that are LOCKED for past dates
+        String habitQuery = "SELECT " + COLUMN_LOG_HABIT_ID + ", " + COLUMN_LOG_DAY + " FROM " + TABLE_HABIT_LOGS + 
+                            " WHERE (" + COLUMN_LOG_STATUS + "='LOCKED' OR " + COLUMN_LOG_STATUS + "='PENDING')" +
+                            " AND " + COLUMN_LOG_DATE + " < ?";
+        
+        android.database.Cursor hCursor = db.rawQuery(habitQuery, new String[]{today});
+        if (hCursor.moveToFirst()) {
+            do {
+                int hId = hCursor.getInt(0);
+                int day = hCursor.getInt(1);
+                updateHabitLog(hId, day, "MISSED");
+                penaltyCount++;
+            } while (hCursor.moveToNext());
+        }
+        hCursor.close();
+
+        if (penaltyCount > 0) {
+            // Apply Penalty (10 HP per missed item)
+            progressManager.reduceHP(penaltyCount * 10);
+            progressManager.resetStreak();
+        }
+
+        return penaltyCount;
     }
 }
 

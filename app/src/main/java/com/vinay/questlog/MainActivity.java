@@ -12,6 +12,17 @@ import com.vinay.questlog.fragments.TaskFragment;
 import com.vinay.questlog.fragments.WorldFragment;
 import com.vinay.questlog.utils.OnBackPressedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +35,13 @@ public class MainActivity extends AppCompatActivity {
     private final android.os.Handler feedbackHandler = new android.os.Handler();
     private final Runnable hideFeedbackRunnable = () -> {
         if (cvFeedback != null) cvFeedback.setVisibility(View.GONE);
+    };
+
+    private BroadcastReceiver progressReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateProgressUI();
+        }
     };
 
     @Override
@@ -54,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             else if (itemId == R.id.nav_habits) selectedFragment = new HabitFragment();
             else if (itemId == R.id.nav_quests) selectedFragment = new TaskFragment();
             else if (itemId == R.id.nav_stats) selectedFragment = new StatsFragment();
+            else if (itemId == R.id.nav_shop) selectedFragment = new com.vinay.questlog.fragments.ShopFragment();
 
             if (selectedFragment != null) {
                 getSupportFragmentManager().beginTransaction()
@@ -120,6 +139,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(progressReceiver, new IntentFilter("com.vinay.questlog.ACTION_QUEST_UPDATED"), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(progressReceiver, new IntentFilter("com.vinay.questlog.ACTION_QUEST_UPDATED"));
+        }
+
+        // 🌟 Automatic Daily Penalty System 🌟
+        // Scans the database for Tasks and Habits that passed their deadline (yesterday or older).
+        DatabaseHelper db = new DatabaseHelper(this);
+        int missedItems = db.scanAndPenalizeMissedItems(progressManager);
+        if (missedItems > 0) {
+            showFeedback("💀", "Missed " + missedItems + " Tasks/Habits!", 0, -(missedItems * 10));
+            updateProgressUI();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(progressReceiver);
+    }
+
     public void updateProgressUI() {
         int xp = progressManager.getXP();
         int hp = progressManager.getHP();
@@ -161,7 +205,61 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void triggerReward(int baseXP, int baseHP) {
+        Random rnd = new Random();
+        int xpGained = baseXP;
+        int hpGained = baseHP;
+        String title = "Quest Complete!";
+        String emoji = "🎉";
+        int dustGained = 0;
+
+        // Slot Machine Effect (Mystery Drops)
+        int roll = rnd.nextInt(100);
+        if (roll < 10) {
+            // 10% chance for CRITICAL HIT
+            xpGained = baseXP * 3;
+            title = "CRITICAL SUCCESS!";
+            emoji = "🔥";
+            triggerExtremeFeedback();
+        } else if (roll < 25) {
+            // 15% chance to find Cosmic Dust
+            dustGained = 15;
+            title = "COSMIC DUST FOUND!";
+            emoji = "✨";
+        }
+
+        progressManager.addXP(xpGained);
+        progressManager.addHP(hpGained);
+        if (dustGained > 0) progressManager.addDust(dustGained);
+        progressManager.incrementStreak();
+
+        showFeedbackWithDust(emoji, title, xpGained, hpGained, dustGained);
+        updateProgressUI();
+    }
+
+    private void triggerExtremeFeedback() {
+        View rootView = findViewById(android.R.id.content);
+        android.animation.ObjectAnimator shake = android.animation.ObjectAnimator.ofFloat(rootView, "translationX", 0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
+        shake.setDuration(500);
+        shake.start();
+        
+        try {
+            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (v != null && v.hasVibrator()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    v.vibrate(500);
+                }
+            }
+        } catch (Exception e) {}
+    }
+
     public void showFeedback(String emoji, String message, int xpChange, int hpChange) {
+        showFeedbackWithDust(emoji, message, xpChange, hpChange, 0);
+    }
+
+    public void showFeedbackWithDust(String emoji, String message, int xpChange, int hpChange, int dustChange) {
         if (cvFeedback == null) return;
 
         tvFeedbackEmoji.setText(emoji);
@@ -173,11 +271,37 @@ public class MainActivity extends AppCompatActivity {
             if (stats.length() > 0) stats.append(" | ");
             stats.append(hpChange > 0 ? "+" : "").append(hpChange).append(" HP");
         }
+        if (dustChange != 0) {
+            if (stats.length() > 0) stats.append(" | ");
+            stats.append("+").append(dustChange).append(" DUST");
+        }
         tvFeedbackStats.setText(stats.toString());
         
         cvFeedback.setVisibility(View.VISIBLE);
+        
+        if (xpChange > 0) {
+            try {
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                if (v != null && v.hasVibrator()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        v.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
+                    } else {
+                        v.vibrate(50);
+                    }
+                }
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                r.play();
+            } catch (Exception e) {}
+        }
+
+        cvFeedback.setScaleX(0.8f);
+        cvFeedback.setScaleY(0.8f);
         cvFeedback.setAlpha(0f);
-        cvFeedback.animate().alpha(1f).setDuration(400).start();
+        cvFeedback.animate().alpha(1f).scaleX(1.1f).scaleY(1.1f).setDuration(200)
+            .withEndAction(() -> {
+                if(cvFeedback != null) cvFeedback.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start();
+            }).start();
         
         // Auto-dismiss after 3 seconds
         feedbackHandler.removeCallbacks(hideFeedbackRunnable);

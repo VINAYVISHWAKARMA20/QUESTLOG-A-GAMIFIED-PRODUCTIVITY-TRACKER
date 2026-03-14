@@ -4,22 +4,23 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class CosmicBackgroundView extends View {
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private static final int STAR_COUNT = 80;
     private final List<Star> stars = new ArrayList<>();
+    private final List<ShootingStar> shootingStars = new ArrayList<>();
     private final Random random = new Random();
-    private final Paint starPaint = new Paint();
-    private ShootingStar shootingStar;
 
     public CosmicBackgroundView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        starPaint.setAntiAlias(true);
     }
 
     @Override
@@ -35,36 +36,36 @@ public class CosmicBackgroundView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         
-        // Draw Stars
+        // Draw static fading stars
         for (Star star : stars) {
             star.update();
-            starPaint.setColor(star.color);
-            starPaint.setAlpha(star.opacity);
-            canvas.drawCircle(star.x, star.y, star.size, starPaint);
+            paint.setColor(star.color);
+            paint.setAlpha(star.opacity);
+            canvas.drawCircle(star.x, star.y, star.size, paint);
         }
-
-        // Draw Shooting Star
-        if (shootingStar != null) {
-            shootingStar.update();
-            if (shootingStar.isDead) {
-                shootingStar = null;
+        
+        // Randomly spawn shooting stars
+        if (random.nextInt(1000) < 5) {
+            shootingStars.add(new ShootingStar(getWidth(), getHeight()));
+        }
+        
+        // Draw shooting stars
+        for (int i = shootingStars.size() - 1; i >= 0; i--) {
+            ShootingStar ss = shootingStars.get(i);
+            ss.update();
+            if (ss.isDead()) {
+                shootingStars.remove(i);
             } else {
-                starPaint.setColor(Color.WHITE);
-                starPaint.setAlpha(shootingStar.opacity);
-                starPaint.setStrokeWidth(shootingStar.size);
-                canvas.drawLine(shootingStar.startX, shootingStar.startY, shootingStar.x, shootingStar.y, starPaint);
+                ss.draw(canvas, paint);
             }
-        } else if (random.nextInt(300) == 0) { // Trigger chance
-            shootingStar = new ShootingStar(getWidth(), getHeight());
         }
-
-        invalidate(); // Animate
+        
+        invalidate(); // Loop animation
     }
 
     private class Star {
         float x, y, size;
-        int opacity, speed;
-        int color = Color.WHITE;
+        int opacity, speed, color = Color.WHITE;
         boolean fadingOut = true;
 
         Star(int w, int h) {
@@ -73,7 +74,8 @@ public class CosmicBackgroundView extends View {
             size = 1 + random.nextFloat() * 2;
             opacity = random.nextInt(255);
             speed = 1 + random.nextInt(3);
-            if (random.nextInt(10) == 0) color = 0xFFFFD700; // Occasional gold star
+            if (random.nextInt(15) == 0) color = 0xFF4081; // Pink
+            if (random.nextInt(15) == 0) color = 0xFF00E5FF; // Cyan
         }
 
         void update() {
@@ -88,31 +90,43 @@ public class CosmicBackgroundView extends View {
     }
 
     private class ShootingStar {
-        float startX, startY, x, y, size;
-        float vx, vy;
-        int opacity = 255;
-        boolean isDead = false;
-
+        float x, y, vx, vy, tailLength;
+        int alpha = 255;
+        
         ShootingStar(int w, int h) {
-            startX = random.nextFloat() * w;
-            startY = random.nextFloat() * (h / 2f);
-            x = startX;
-            y = startY;
-            vx = 15 + random.nextFloat() * 10;
-            vy = 10 + random.nextFloat() * 8;
-            size = 2 + random.nextFloat() * 3;
-            // Angle it slightly
-            if (random.nextBoolean()) vx = -vx;
+            x = w + 50f;
+            y = random.nextFloat() * h;
+            vx = -3f - random.nextFloat() * 4f; // Slower
+            vy = 1f + random.nextFloat() * 3f; // Slower
+            tailLength = 200f + random.nextFloat() * 400f; // Much longer
         }
-
+        
         void update() {
             x += vx;
             y += vy;
-            opacity -= 5;
-            if (opacity <= 0) isDead = true;
+            alpha -= 1; // Slower fade
+        }
+        
+        boolean isDead() {
+            return alpha <= 0 || x < -200 || y > getHeight() * 1.5f;
+        }
+        
+        void draw(Canvas canvas, Paint paint) {
+            paint.setShader(null);
+            paint.setStrokeWidth(4f);
+            paint.setColor(Color.WHITE);
+            paint.setAlpha(alpha);
+            
+            paint.setStyle(Paint.Style.STROKE);
+            android.graphics.LinearGradient tailGrad = new android.graphics.LinearGradient(
+                x, y, x - (vx * tailLength / 20f), y - (vy * tailLength / 20f),
+                Color.WHITE, 0x00FFFFFF, Shader.TileMode.CLAMP
+            );
+            paint.setShader(tailGrad);
+            canvas.drawLine(x, y, x - (vx * tailLength / 20f), y - (vy * tailLength / 20f), paint);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setShader(null);
+            paint.setAlpha(255);
         }
     }
 }
-
-
-

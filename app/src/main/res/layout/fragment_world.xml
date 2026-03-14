@@ -1,81 +1,29 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@android:color/transparent">
 
-    <com.vinay.questlog.views.CosmicBackgroundView
+    <!-- Background Map spans the whole screen -->
+    <com.vinay.questlog.views.CosmicJourneyView
+        android:id="@+id/cosmic_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <!-- Premium Header -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardBackgroundColor="#22FFFFFF"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
-                android:background="@drawable/glass_sheen">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="WORLD MASTERY"
-                    android:textColor="@color/gold"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.2" />
-
-                <TextView
-                    android:id="@+id/tv_world_progress_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Exploring the Realms..."
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Complete habits to unlock higher level islands and reach the Legend's Peak."
-                    android:textColor="#88FFFFFF"
-                    android:textSize="12sp"
-                    android:layout_marginTop="8dp" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="| Discover 7 Islands"
-            android:textColor="@color/gold"
-            android:textStyle="bold"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Islands List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_islands"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="80dp" />
-
-    </LinearLayout>
+    <!-- Foreground Content Layer -->
+    
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_space_station"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Space Station &#x2B50;"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/gold"
+        android:elevation="6dp"/>
+        
 </FrameLayout>
 

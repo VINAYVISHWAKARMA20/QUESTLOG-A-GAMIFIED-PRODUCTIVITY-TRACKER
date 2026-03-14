@@ -164,10 +164,11 @@ public class HabitFragment extends Fragment implements HabitAdapter.OnHabitActio
         dbHelper.updateHabitLog(log.getHabitId(), log.getDay(), nextStatus);
         
         if ("DONE".equals(nextStatus)) {
-            progressManager.addXP(20);
-            progressManager.addHP(5);
             if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).showFeedback("🔥", "Great job!", 20, 5);
+                ((MainActivity) getActivity()).triggerReward(20, 5);
+            } else {
+                progressManager.addXP(20);
+                progressManager.addHP(5);
             }
         } else if ("DONE".equals(currentStatus)) {
             // REVERSAL: Was DONE, now NOT DONE

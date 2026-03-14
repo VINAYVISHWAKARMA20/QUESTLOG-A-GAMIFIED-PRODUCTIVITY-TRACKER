@@ -91,6 +91,26 @@
             android:layout_marginBottom="24dp"
             android:textSize="15sp" />
 
+        <!-- Recurrence -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="RECURRENCE"
+            android:textColor="@color/gold"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <Spinner
+            android:id="@+id/spinner_recurrence"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="16dp"
+            android:popupBackground="@color/dark_grey" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

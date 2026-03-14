@@ -19,15 +19,7 @@
     </item>
 
     <!-- Level 3: Celestial Flare (Starburst Effect) -->
-    <item android:top="4dp" android:left="4dp" android:right="4dp" android:bottom="4dp">
-        <shape android:shape="oval">
-            <gradient
-                android:type="sweep"
-                android:startColor="#00FFFFFF"
-                android:centerColor="#44FFFFFF"
-                android:endColor="#00FFFFFF" />
-        </shape>
-    </item>
+    <!-- Removed to keep icon clear -->
 
     <!-- Level 4: Transparent Glass Core with Gold Stroke -->
     <item android:top="8dp" android:left="8dp" android:right="8dp" android:bottom="8dp">

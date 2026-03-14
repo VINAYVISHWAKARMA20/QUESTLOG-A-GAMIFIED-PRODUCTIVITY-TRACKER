@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -191,10 +193,15 @@ public class TaskFragment extends Fragment {
                     dbHelper.updateQuestStatus(quest.getId(), nextStatus);
                     
                     if ("COMPLETED".equals(nextStatus)) {
-                        progressManager.addXP(quest.getDifficulty());
-                        progressManager.addHP(10);
                         if (getActivity() instanceof MainActivity) {
-                            ((MainActivity) getActivity()).showFeedback("🎉", "Quest Complete!", quest.getDifficulty(), 10);
+                            ((MainActivity) getActivity()).triggerReward(quest.getDifficulty(), 10);
+                        } else {
+                            progressManager.addXP(quest.getDifficulty());
+                            progressManager.addHP(10);
+                        }
+                        
+                        if (!"None".equals(quest.getRecurrence()) && quest.getRecurrence() != null) {
+                            scheduleNextOccurrence(quest);
                         }
                     } else {
                         // REVERSAL
@@ -249,11 +256,17 @@ public class TaskFragment extends Fragment {
         EditText etTitle = dialogView.findViewById(R.id.et_quest_title);
         EditText etDetails = dialogView.findViewById(R.id.et_quest_details);
         EditText etCategory = dialogView.findViewById(R.id.et_quest_category);
+        Spinner spinnerRecurrence = dialogView.findViewById(R.id.spinner_recurrence);
         Button btnDate = dialogView.findViewById(R.id.btn_select_date);
         Button btnTime = dialogView.findViewById(R.id.btn_select_time);
         Button btnAssign = dialogView.findViewById(R.id.btn_assign_quest);
 
         AlertDialog dialog = builder.create();
+        
+        String[] recurrenceOptions = {"None", "Daily", "Weekly", "Bi-Weekly", "Monthly", "Quarterly", "Yearly"};
+        ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner, recurrenceOptions);
+        spinAdapter.setDropDownViewResource(R.layout.item_spinner);
+        spinnerRecurrence.setAdapter(spinAdapter);
 
         btnDate.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
@@ -275,9 +288,10 @@ public class TaskFragment extends Fragment {
             String title = etTitle.getText().toString().trim();
             String details = etDetails.getText().toString().trim();
             String category = etCategory.getText().toString().trim();
+            String recurrence = spinnerRecurrence.getSelectedItem().toString();
 
             if (!title.isEmpty() && !selectedDate.isEmpty() && !selectedTime.isEmpty()) {
-                long questId = dbHelper.addQuest(title, details, category, selectedDate, selectedTime, 100);
+                long questId = dbHelper.addQuest(title, details, category, selectedDate, selectedTime, 100, recurrence);
                 scheduleAlarm((int) questId, title, selectedDate, selectedTime);
                 loadData();
                 dialog.dismiss();
@@ -288,6 +302,32 @@ public class TaskFragment extends Fragment {
         });
 
         dialog.show();
+    }
+    
+    private void scheduleNextOccurrence(Quest quest) {
+        try {
+            String[] dateParts = quest.getDate().split("/");
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, Integer.parseInt(dateParts[2]));
+            cal.set(Calendar.MONTH, Integer.parseInt(dateParts[1]) - 1);
+            cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateParts[0]));
+            
+            String rec = quest.getRecurrence();
+            if ("Daily".equals(rec)) cal.add(Calendar.DAY_OF_MONTH, 1);
+            else if ("Weekly".equals(rec)) cal.add(Calendar.WEEK_OF_YEAR, 1);
+            else if ("Bi-Weekly".equals(rec)) cal.add(Calendar.WEEK_OF_YEAR, 2);
+            else if ("Monthly".equals(rec)) cal.add(Calendar.MONTH, 1);
+            else if ("Quarterly".equals(rec)) cal.add(Calendar.MONTH, 3);
+            else if ("Yearly".equals(rec)) cal.add(Calendar.YEAR, 1);
+            
+            String newDate = cal.get(Calendar.DAY_OF_MONTH) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR);
+            
+            long targetId = dbHelper.addQuest(quest.getTitle(), quest.getDetails(), quest.getCategory(), newDate, quest.getTime(), quest.getDifficulty(), quest.getRecurrence());
+            scheduleAlarm((int) targetId, quest.getTitle(), newDate, quest.getTime());
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void scheduleAlarm(int questId, String title, String date, String time) {

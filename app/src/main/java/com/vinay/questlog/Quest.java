@@ -9,8 +9,9 @@ public class Quest {
     private String time;
     private int difficulty;
     private String status;
+    private String recurrence;
 
-    public Quest(int id, String title, String details, String category, String date, String time, int difficulty, String status) {
+    public Quest(int id, String title, String details, String category, String date, String time, int difficulty, String status, String recurrence) {
         this.id = id;
         this.title = title;
         this.details = details;
@@ -19,6 +20,7 @@ public class Quest {
         this.time = time;
         this.difficulty = difficulty;
         this.status = status;
+        this.recurrence = recurrence;
     }
 
     // Getters
@@ -30,6 +32,7 @@ public class Quest {
     public String getTime() { return time; }
     public int getDifficulty() { return difficulty; }
     public String getStatus() { return status; }
+    public String getRecurrence() { return recurrence; }
 }
 
 
