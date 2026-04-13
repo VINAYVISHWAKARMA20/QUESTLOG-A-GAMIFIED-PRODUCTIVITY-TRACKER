@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Level 1: Outer God-Ray Glow -->
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:startColor="#11FFD700"
+                android:centerColor="#00FFD700"
+                android:endColor="#11FFD700"
+                android:type="sweep" />
+        </shape>
+    </item>
+
+    <!-- Level 2: Secondary Golden Aura -->
+    <item android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="2dp">
+        <shape android:shape="oval">
+            <solid android:color="#22FFD700" />
+        </shape>
+    </item>
+
+    <!-- Level 3: Celestial Flare (Starburst Effect) -->
+    <!-- Removed to keep icon clear -->
+
+    <!-- Level 4: Transparent Glass Core with Gold Stroke -->
+    <item android:top="8dp" android:left="8dp" android:right="8dp" android:bottom="8dp">
+        <shape android:shape="oval">
+            <solid android:color="#11FFFFFF" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/gold" />
+        </shape>
+    </item>
+</layer-list>

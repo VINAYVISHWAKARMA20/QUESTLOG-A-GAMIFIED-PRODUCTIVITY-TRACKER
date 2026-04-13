@@ -1,0 +1,29 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <!-- Background Map spans the whole screen -->
+    <com.vinay.questlog.views.CosmicJourneyView
+        android:id="@+id/cosmic_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Foreground Content Layer -->
+    
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_space_station"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Space Station &#x2B50;"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/gold"
+        android:elevation="6dp"/>
+        
+</FrameLayout>
+

@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <RelativeLayout
+        android:layout_width="96dp"
+        android:layout_height="96dp">
+
+        <ImageView
+            android:id="@+id/iv_badge_silhouette"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="28dp"
+            android:scaleType="fitCenter"
+            android:alpha="0.2"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_badge_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="32dp"
+            android:src="@drawable/ic_lock"
+            android:scaleType="fitCenter"
+            android:background="@drawable/badge_bg_locked" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_badge_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Locked"
+        android:textColor="#88FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tv_badge_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Complete tasks to unlock"
+        android:textColor="#55FFFFFF"
+        android:textSize="9sp"
+        android:gravity="center"
+        android:maxLines="2" />
+
+    <TextView
+        android:id="@+id/tv_badge_quote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text=""
+        android:textColor="@color/gold"
+        android:textSize="8sp"
+        android:textStyle="italic"
+        android:gravity="center"
+        android:visibility="gone" />
+
+</LinearLayout>
+

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#26FFFFFF" /> <!-- Glassy transparency -->
+    <corners android:radius="22dp" />
+    <stroke
+        android:width="2dp"
+        android:color="#B3FFD700" /> <!-- More visible gold border -->
+</shape>
