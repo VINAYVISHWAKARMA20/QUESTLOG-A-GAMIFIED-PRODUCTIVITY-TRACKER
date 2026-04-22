@@ -20,6 +20,7 @@ public class QuestAdapter extends RecyclerView.Adapter<QuestAdapter.QuestViewHol
     public interface OnQuestActionListener {
         void onDeleteQuest(Quest quest);
         void onCompleteQuest(Quest quest);
+        void onQuestClick(Quest quest);
     }
 
     public QuestAdapter(List<Quest> quests, OnQuestActionListener listener) {
@@ -83,6 +84,11 @@ public class QuestAdapter extends RecyclerView.Adapter<QuestAdapter.QuestViewHol
         
         // Completion Icon color
         holder.btnComplete.setColorFilter(isCompleted ? 0xFF00FF00 : 0xFFCFAD5C); 
+
+        // Click on entire card to show details
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onQuestClick(quest);
+        });
 
         holder.btnDelete.setOnClickListener(v -> {
             if (listener != null) listener.onDeleteQuest(quest);

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gold_border_bg"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:text="🔄 RESCHEDULE QUESTS"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="28dp"
+            android:text="Customize how your quests are scheduled"
+            android:textColor="#88FFFFFF"
+            android:textSize="13sp" />
+
+        <!-- Start Hour -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="START HOUR"
+            android:textColor="@color/gold"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <Button
+            android:id="@+id/btn_start_hour"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:backgroundTint="@color/dark_grey"
+            android:text="09:00 AM"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:layout_marginBottom="20dp"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1.5dp" />
+
+        <!-- End Hour -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="END HOUR"
+            android:textColor="@color/gold"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <Button
+            android:id="@+id/btn_end_hour"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:backgroundTint="@color/dark_grey"
+            android:text="09:00 PM"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:layout_marginBottom="20dp"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1.5dp" />
+
+        <!-- Gap Between Tasks -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="GAP BETWEEN TASKS"
+            android:textColor="@color/gold"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <Spinner
+            android:id="@+id/spinner_gap"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="16dp"
+            android:popupBackground="@color/dark_grey" />
+
+        <!-- Schedule Strategy -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="SCHEDULING STRATEGY"
+            android:textColor="@color/gold"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <Spinner
+            android:id="@+id/spinner_strategy"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="16dp"
+            android:popupBackground="@color/dark_grey" />
+
+        <!-- Start Date -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="START FROM DATE"
+            android:textColor="@color/gold"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <Button
+            android:id="@+id/btn_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:backgroundTint="@color/dark_grey"
+            android:text="Today"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:layout_marginBottom="20dp"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1.5dp" />
+
+        <!-- Max Tasks Per Day -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="MAX TASKS PER DAY"
+            android:textColor="@color/gold"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <Spinner
+            android:id="@+id/spinner_max_per_day"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/edit_text_bg"
+            android:layout_marginBottom="28dp"
+            android:paddingStart="16dp"
+            android:popupBackground="@color/dark_grey" />
+
+        <!-- Preview info -->
+        <TextView
+            android:id="@+id/tv_reschedule_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/glass_panel_bg"
+            android:padding="16dp"
+            android:text="📋 Pending quests will be rescheduled with your preferences"
+            android:textColor="#AAFFFFFF"
+            android:textSize="13sp" />
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel_reschedule"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/dark_grey"
+                android:text="CANCEL"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:cornerRadius="12dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="1dp" />
+
+            <Button
+                android:id="@+id/btn_apply_reschedule"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#AA00FF"
+                android:text="🔄 APPLY"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                app:cornerRadius="12dp"
+                app:elevation="4dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -72,7 +72,7 @@ public class TaskFragment extends Fragment {
         view.findViewById(R.id.btn_filter_all).setOnClickListener(v -> filterQuests("All"));
         view.findViewById(R.id.btn_ai_generate).setOnClickListener(v -> showAIGenerateDialog());
         view.findViewById(R.id.btn_ai_generate).setOnLongClickListener(v -> { showApiKeyDialog(); return true; });
-        view.findViewById(R.id.btn_reschedule_all).setOnClickListener(v -> rescheduleAllQuests());
+        view.findViewById(R.id.btn_reschedule_all).setOnClickListener(v -> showRescheduleDialog());
 
         loadData();
 
@@ -245,6 +245,11 @@ public class TaskFragment extends Fragment {
                     }
                     loadData();
                 }
+
+                @Override
+                public void onQuestClick(Quest quest) {
+                    showQuestDetailDialog(quest);
+                }
             });
             rvQuests.setAdapter(adapter);
         }
@@ -274,6 +279,73 @@ public class TaskFragment extends Fragment {
                 }
             }
         }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // QUEST DETAIL POPUP
+    // ═══════════════════════════════════════════════════════════
+
+    private void showQuestDetailDialog(Quest quest) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.RPGDialogTheme);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_quest_detail, null);
+        builder.setView(dialogView);
+
+        // Bind all fields
+        TextView tvPriorityEmoji = dialogView.findViewById(R.id.tv_detail_priority_emoji);
+        TextView tvPriority = dialogView.findViewById(R.id.tv_detail_priority);
+        TextView tvXP = dialogView.findViewById(R.id.tv_detail_xp);
+        TextView tvTitle = dialogView.findViewById(R.id.tv_detail_title);
+        TextView tvDetails = dialogView.findViewById(R.id.tv_detail_details);
+        TextView tvDate = dialogView.findViewById(R.id.tv_detail_date);
+        TextView tvTime = dialogView.findViewById(R.id.tv_detail_time);
+        TextView tvCategory = dialogView.findViewById(R.id.tv_detail_category);
+        TextView tvRecurrence = dialogView.findViewById(R.id.tv_detail_recurrence);
+        TextView tvStatusEmoji = dialogView.findViewById(R.id.tv_detail_status_emoji);
+        TextView tvStatus = dialogView.findViewById(R.id.tv_detail_status);
+        Button btnClose = dialogView.findViewById(R.id.btn_close_detail);
+
+        // Populate data
+        tvPriorityEmoji.setText(quest.getPriorityEmoji());
+        tvPriority.setText(quest.getPriorityLabel() + " PRIORITY");
+        tvXP.setText("+" + quest.getDifficulty() + " XP");
+        tvTitle.setText(quest.getTitle());
+        tvDetails.setText(quest.getDetails() != null && !quest.getDetails().isEmpty() 
+            ? quest.getDetails() : "No description provided");
+        tvDate.setText(quest.getDate());
+        tvTime.setText(quest.getTime());
+        tvCategory.setText(quest.getCategory() != null && !quest.getCategory().isEmpty() 
+            ? quest.getCategory() : "Uncategorized");
+        tvRecurrence.setText(quest.getRecurrence() != null ? quest.getRecurrence() : "None");
+
+        // Status
+        String status = quest.getStatus();
+        if ("COMPLETED".equals(status)) {
+            tvStatusEmoji.setText("✅");
+            tvStatus.setText("COMPLETED");
+            tvStatus.setTextColor(0xFF00C853);
+        } else if ("MISSED".equals(status)) {
+            tvStatusEmoji.setText("❌");
+            tvStatus.setText("MISSED");
+            tvStatus.setTextColor(0xFFFF2D55);
+        } else {
+            tvStatusEmoji.setText("⏳");
+            tvStatus.setText("PENDING");
+            tvStatus.setTextColor(0xFFFFC107);
+        }
+
+        // Priority color
+        int priorityColor;
+        switch (quest.getPriority()) {
+            case TaskScheduler.PRIORITY_CRITICAL: priorityColor = 0xFFFF2D55; break;
+            case TaskScheduler.PRIORITY_HIGH: priorityColor = 0xFFFF6D00; break;
+            case TaskScheduler.PRIORITY_LOW: priorityColor = 0xFF00C853; break;
+            default: priorityColor = 0xFFFFC107;
+        }
+        tvPriority.setTextColor(priorityColor);
+
+        AlertDialog dialog = builder.create();
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -515,24 +587,163 @@ public class TaskFragment extends Fragment {
 
         btnReschedule.setOnClickListener(v -> {
             dialog.dismiss();
-            rescheduleAllQuests();
+            showRescheduleDialog();
         });
 
         dialog.show();
     }
 
     // ═══════════════════════════════════════════════════════════
-    // RESCHEDULING
+    // RESCHEDULING WITH USER PREFERENCES
     // ═══════════════════════════════════════════════════════════
 
-    private void rescheduleAllQuests() {
-        int count = TaskScheduler.rescheduleAllPending(dbHelper);
-        if (count > 0) {
-            loadData();
-            Toast.makeText(getContext(), "🔄 " + count + " quests rescheduled by priority!", Toast.LENGTH_SHORT).show();
-        } else {
+    // Tracks user selections in the reschedule dialog
+    private int rescheduleStartHour = 9;
+    private int rescheduleStartMinute = 0;
+    private int rescheduleEndHour = 21;
+    private int rescheduleEndMinute = 0;
+    private Calendar rescheduleStartDate = Calendar.getInstance();
+
+    private void showRescheduleDialog() {
+        int pendingCount = dbHelper.getPendingQuestsCount();
+        if (pendingCount == 0) {
             Toast.makeText(getContext(), "No pending quests to reschedule.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.RPGDialogTheme);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_reschedule, null);
+        builder.setView(dialogView);
+
+        Button btnStartHour = dialogView.findViewById(R.id.btn_start_hour);
+        Button btnEndHour = dialogView.findViewById(R.id.btn_end_hour);
+        Button btnStartDate = dialogView.findViewById(R.id.btn_start_date);
+        Spinner spinnerGap = dialogView.findViewById(R.id.spinner_gap);
+        Spinner spinnerStrategy = dialogView.findViewById(R.id.spinner_strategy);
+        Spinner spinnerMaxPerDay = dialogView.findViewById(R.id.spinner_max_per_day);
+        TextView tvPreview = dialogView.findViewById(R.id.tv_reschedule_preview);
+        Button btnCancel = dialogView.findViewById(R.id.btn_cancel_reschedule);
+        Button btnApply = dialogView.findViewById(R.id.btn_apply_reschedule);
+
+        AlertDialog dialog = builder.create();
+
+        // Reset to defaults
+        rescheduleStartHour = 9;
+        rescheduleStartMinute = 0;
+        rescheduleEndHour = 21;
+        rescheduleEndMinute = 0;
+        rescheduleStartDate = Calendar.getInstance();
+
+        // Initialize displayed text
+        btnStartHour.setText(formatTime12(rescheduleStartHour, rescheduleStartMinute));
+        btnEndHour.setText(formatTime12(rescheduleEndHour, rescheduleEndMinute));
+        btnStartDate.setText("Today");
+
+        // Gap options
+        String[] gapOptions = {"30 minutes", "45 minutes", "1 hour", "1.5 hours", "2 hours", "3 hours"};
+        int[] gapValues = {30, 45, 60, 90, 120, 180};
+        ArrayAdapter<String> gapAdapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner, gapOptions);
+        gapAdapter.setDropDownViewResource(R.layout.item_spinner);
+        spinnerGap.setAdapter(gapAdapter);
+        spinnerGap.setSelection(2); // Default: 1 hour
+
+        // Strategy options
+        String[] strategyOptions = {
+            "🔴 Priority First (Critical → Low)",
+            "🔄 Spread Evenly (Mix priorities)",
+            "💪 Hardest First (High XP → Low XP)",
+            "⚡ Quick Wins First (Low XP → High XP)"
+        };
+        ArrayAdapter<String> strategyAdapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner, strategyOptions);
+        strategyAdapter.setDropDownViewResource(R.layout.item_spinner);
+        spinnerStrategy.setAdapter(strategyAdapter);
+        spinnerStrategy.setSelection(0); // Default: Priority First
+
+        // Max per day options
+        String[] maxPerDayOptions = {"2 tasks/day", "3 tasks/day", "4 tasks/day", "5 tasks/day", "6 tasks/day", "8 tasks/day", "10 tasks/day", "No limit"};
+        int[] maxPerDayValues = {2, 3, 4, 5, 6, 8, 10, 999};
+        ArrayAdapter<String> maxAdapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner, maxPerDayOptions);
+        maxAdapter.setDropDownViewResource(R.layout.item_spinner);
+        spinnerMaxPerDay.setAdapter(maxAdapter);
+        spinnerMaxPerDay.setSelection(5); // Default: 8 tasks/day
+
+        // Update preview text
+        tvPreview.setText("📋 " + pendingCount + " pending quests will be rescheduled with your preferences");
+
+        // Start hour picker
+        btnStartHour.setOnClickListener(v -> {
+            new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
+                rescheduleStartHour = hourOfDay;
+                rescheduleStartMinute = minute;
+                btnStartHour.setText(formatTime12(hourOfDay, minute));
+            }, rescheduleStartHour, rescheduleStartMinute, false).show();
+        });
+
+        // End hour picker
+        btnEndHour.setOnClickListener(v -> {
+            new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
+                rescheduleEndHour = hourOfDay;
+                rescheduleEndMinute = minute;
+                btnEndHour.setText(formatTime12(hourOfDay, minute));
+            }, rescheduleEndHour, rescheduleEndMinute, false).show();
+        });
+
+        // Start date picker
+        btnStartDate.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance();
+            new DatePickerDialog(getContext(), (view, year, month, dayOfMonth) -> {
+                rescheduleStartDate = Calendar.getInstance();
+                rescheduleStartDate.set(year, month, dayOfMonth);
+                btnStartDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnApply.setOnClickListener(v -> {
+            // Validate inputs
+            if (rescheduleStartHour >= rescheduleEndHour) {
+                Toast.makeText(getContext(), "End hour must be after start hour!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Build preferences
+            TaskScheduler.SchedulePreferences prefs = new TaskScheduler.SchedulePreferences();
+            prefs.startHour = rescheduleStartHour;
+            prefs.endHour = rescheduleEndHour;
+            prefs.gapMinutes = gapValues[spinnerGap.getSelectedItemPosition()];
+            prefs.strategy = spinnerStrategy.getSelectedItemPosition();
+            prefs.maxTasksPerDay = maxPerDayValues[spinnerMaxPerDay.getSelectedItemPosition()];
+            prefs.startDate = rescheduleStartDate;
+
+            // Apply rescheduling
+            int count = TaskScheduler.rescheduleAllPending(dbHelper, prefs);
+            
+            loadData();
+            dialog.dismiss();
+
+            String strategyName;
+            switch (prefs.strategy) {
+                case TaskScheduler.STRATEGY_SPREAD_EVENLY: strategyName = "Spread Evenly"; break;
+                case TaskScheduler.STRATEGY_DIFFICULTY_FIRST: strategyName = "Hardest First"; break;
+                case TaskScheduler.STRATEGY_QUICK_WINS_FIRST: strategyName = "Quick Wins"; break;
+                default: strategyName = "Priority First";
+            }
+
+            Toast.makeText(getContext(), 
+                "🔄 " + count + " quests rescheduled!\n" +
+                "Strategy: " + strategyName + " | Gap: " + gapOptions[spinnerGap.getSelectedItemPosition()],
+                Toast.LENGTH_LONG).show();
+        });
+
+        dialog.show();
+    }
+
+    private String formatTime12(int hour, int minute) {
+        String amPm = hour < 12 ? "AM" : "PM";
+        int displayHour = hour % 12;
+        if (displayHour == 0) displayHour = 12;
+        return String.format("%d:%02d %s", displayHour, minute, amPm);
     }
 
     // ═══════════════════════════════════════════════════════════

@@ -31,8 +31,9 @@ public class GeminiTaskGenerator {
     private static final String PREFS_NAME = "questlog_ai_prefs";
     private static final String PREF_API_KEY = "gemini_api_key";
 
-    // Default key — can be overridden at runtime via setApiKey()
-    private static final String DEFAULT_API_KEY = "AIzaSyDMs84ei25s1lSJEq_AWXtcvnvg0QcB2lc";
+    // API key is injected at build time from local.properties via BuildConfig
+    // This keeps the key out of source code and version control
+    private static final String DEFAULT_API_KEY = BuildConfig.GEMINI_API_KEY;
 
     // Use gemini-3.1-flash-lite — powerful model with generous rate limits
     private static final String API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
