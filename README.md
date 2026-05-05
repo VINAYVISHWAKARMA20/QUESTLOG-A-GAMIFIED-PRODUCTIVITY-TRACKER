@@ -50,6 +50,7 @@ Spend your gathered **Cosmic Dust** in the Shop:
 - **Platform:** Android studio (Java)
 - **UI System:** XML (Material Design Components + Custom Canvas Graphics)
 - **Graphics Engine:** Fully custom software rendering using `Canvas`, `RadialGradient`, `Path`, and complex `Shader` sweeps for stunning UI effects without heavy Unity/OpenGL overhead.
-- **Local Database:** SQLite via `DatabaseHelper`
+- **Local Database:** SQLite via `DatabaseHelper`+firebase console
+- 
 
 ---
