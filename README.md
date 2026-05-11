@@ -44,6 +44,7 @@ Spend your gathered **Cosmic Dust** in the Shop:
 - **Utility Items:** Buy Deflector Shields to block incoming HP damage, or Station Docking Passes to pause your streak during vacations!
 - **Cosmic Pets & Ship Colors:** Adopt pets (like the highly coveted animated Cosmic Dragon!) that physically fly alongside your spaceship on the map!
 - **Titles:** Buy bragging-rights Titles that show below your level.
+-**installed payment gateway
 ---
 
 ## 💻 Tech Stack
@@ -51,6 +52,8 @@ Spend your gathered **Cosmic Dust** in the Shop:
 - **UI System:** XML (Material Design Components + Custom Canvas Graphics)
 - **Graphics Engine:** Fully custom software rendering using `Canvas`, `RadialGradient`, `Path`, and complex `Shader` sweeps for stunning UI effects without heavy Unity/OpenGL overhead.
 - **Local Database:** SQLite via `DatabaseHelper`+firebase console
+
+
 - 
 
 ---
